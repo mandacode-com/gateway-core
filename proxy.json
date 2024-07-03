@@ -1,0 +1,14 @@
+[
+  {
+    "path": "/api",
+    "target": "http://localhost:3000"
+  },
+  {
+    "path": "/auth",
+    "target": "http://localhost:3001"
+  },
+  {
+    "path": "/cloud",
+    "target": "http://localhost:3002"
+  }
+]
