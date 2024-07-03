@@ -4,8 +4,9 @@ const logger = pino({
   transport: {
     target: 'pino-pretty',
     options: {
-      colorize: true,
+      destination: './logs/info.log',
       translateTime: 'SYS:standard',
+      colorize: false,
     },
   },
 });

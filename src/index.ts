@@ -7,24 +7,37 @@ import config from './config';
 import { redis } from './config/redis';
 import { authenticate } from './middlewares/auth';
 import proxies from './config/proxies';
+import fs from 'fs';
 
 async function bootstrap() {
   const app = express();
 
+  // Create logs directory if it doesn't exist
+  const logsDir = './logs';
+  if (!fs.existsSync(logsDir)) {
+    fs.mkdirSync(logsDir);
+  }
+
+  // Create proxy.json file if it doesn't exist
+  const proxyFile = './proxy.json';
+  if (!fs.existsSync(proxyFile)) {
+    fs.writeFileSync(proxyFile, '[]');
+  }
+
+  // Connect to Redis
   redis
     .on('connect', () => {
       logger.info('Connected to Redis');
     })
     .connect();
 
-  app.all('*', (_, res) => {
-    res.status(404).send('Not Found');
-  });
-
   // Authentication middleware
   app.use(authenticate);
   // Request logger middleware
-  app.use(reqLogger);
+  app.use((req, res, next) => {
+    reqLogger(req, res)('Request received');
+    next();
+  });
   // Proxy middleware
   proxies.forEach((proxy) => {
     app.use(
@@ -32,7 +45,9 @@ async function bootstrap() {
       createProxyMiddleware({
         target: proxy.target,
         changeOrigin: true,
-        logger: logger,
+        pathRewrite: {
+          [`^${proxy.path}`]: '',
+        },
       })
     );
   });

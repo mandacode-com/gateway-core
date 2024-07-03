@@ -10,7 +10,7 @@ RUN npm install -y && \
   npm run build && \
   npm prune --production
 
-FROM node:21-alpine as deploy
+FROM node:22-alpine as deploy
 
 WORKDIR /app
 RUN rm -rf ./*

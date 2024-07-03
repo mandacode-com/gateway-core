@@ -1,7 +1,7 @@
 [
   {
     "path": "/api",
-    "target": "http://localhost:3000"
+    "target": "https://ifelfi.com/api/ifauth"
   },
   {
     "path": "/auth",
