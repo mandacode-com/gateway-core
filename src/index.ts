@@ -8,15 +8,10 @@ import { redis } from './config/redis';
 import { authenticate } from './middlewares/auth';
 import proxies from './config/proxies';
 import fs from 'fs';
+import loadProxies from './config/proxies';
 
 async function bootstrap() {
   const app = express();
-
-  // Create proxy.json file if it doesn't exist
-  const proxyFile = './proxy.json';
-  if (!fs.existsSync(proxyFile)) {
-    fs.writeFileSync(proxyFile, '[]');
-  }
 
   // Connect to Redis
   redis
@@ -36,7 +31,7 @@ async function bootstrap() {
     next();
   });
   // Proxy middleware
-  proxies.forEach((proxy) => {
+  loadProxies().forEach((proxy) => {
     app.use(
       proxy.path,
       createProxyMiddleware({

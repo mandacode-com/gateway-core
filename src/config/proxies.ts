@@ -24,6 +24,9 @@ function validate(list: T[]) {
   return list;
 }
 
-const proxies = JSON.parse(fs.readFileSync('proxy.json', 'utf-8')) as T[];
-
-export default validate(proxies);
+export default function loadProxies(file: string = 'proxy.json') {
+  if (!fs.existsSync(file))
+    fs.writeFileSync(file, JSON.stringify([]));
+  const proxies = JSON.parse(fs.readFileSync('proxy.json', 'utf-8')) as T[];
+  return validate(proxies);
+}
