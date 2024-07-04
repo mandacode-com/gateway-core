@@ -6,12 +6,25 @@ import 'dotenv/config';
 import config from './config';
 import { redis } from './config/redis';
 import { authenticate } from './middlewares/auth';
-import proxies from './config/proxies';
-import fs from 'fs';
 import loadProxies from './config/proxies';
+import cors from 'cors';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = express();
+
+  // Helmet
+  app.use(helmet());
+
+  // Cors middleware
+  app.use(
+    cors({
+      origin: config.cors.origin,
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      exposedHeaders: ['x-uuid', 'x-gateway-secret'],
+    })
+  );
 
   // Connect to Redis
   redis
@@ -25,11 +38,13 @@ async function bootstrap() {
 
   // Authentication middleware
   app.use(authenticate);
+
   // Request logger middleware
   app.use((req, res, next) => {
     reqLogger(req, res)('Request received');
     next();
   });
+
   // Proxy middleware
   loadProxies().forEach((proxy) => {
     app.use(
@@ -45,7 +60,7 @@ async function bootstrap() {
   });
 
   app.listen(config.port, () => {
-    logger.info(`Server started at http://localhost:${config.port}`);
+    logger.info(`Server started on port ${config.port}`)
   });
 }
 

@@ -3,6 +3,9 @@ import { Value } from '@sinclair/typebox/value';
 
 const T = Type.Object({
   port: Type.Number(),
+  cors: Type.Object({
+    origin: Type.String(),
+  }),
   gateway: Type.Object({
     secret: Type.String(),
   }),
@@ -20,6 +23,9 @@ type T = Static<typeof T>;
 function validate(raw: Record<string, unknown>) {
   const config: T = {
     port: parseInt(raw.PORT as string),
+    cors: {
+      origin: raw.CORS_ORIGIN as string || '*',
+    },
     gateway: {
       secret: raw.GATEWAY_SECRET as string,
     },

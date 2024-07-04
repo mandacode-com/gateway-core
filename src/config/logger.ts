@@ -4,7 +4,7 @@ const logger = pino({
   transport: {
     target: 'pino-pretty',
     options: {
-      destination: './logs/info.log',
+      destination: './logs/app.log',
       translateTime: 'SYS:standard',
       colorize: false,
       mkdir: true,
