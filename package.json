@@ -14,8 +14,6 @@
   "dependencies": {
     "@sinclair/typebox": "^0.32.34",
     "connect-redis": "^7.1.1",
-    "cookie": "^0.6.0",
-    "cookie-signature": "^1.2.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
