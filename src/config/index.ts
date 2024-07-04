@@ -25,7 +25,7 @@ function validate(raw: Record<string, unknown>) {
     },
     session: {
       name: raw.SESSION_NAME as string,
-      secret: raw.SESSION_SECRET as string,
+      secret: raw.COOKIE_SECRET as string,
     },
     redis: {
       url: raw.REDIS_URL as string,
