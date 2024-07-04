@@ -11,6 +11,7 @@ const T = Type.Object({
   }),
   session: Type.Object({
     name: Type.String(),
+    domain: Type.String(),
     secret: Type.String(),
     timeout: Type.Number(),
   }),
@@ -32,6 +33,7 @@ function validate(raw: Record<string, unknown>) {
     },
     session: {
       name: raw.SESSION_NAME as string,
+      domain: raw.COOKIE_DOMAIN as string,
       secret: raw.COOKIE_SECRET as string,
       timeout: parseInt(raw.SESSION_TIMEOUT as string),
     },

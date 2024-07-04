@@ -44,6 +44,7 @@ async function bootstrap() {
       saveUninitialized: false,
       cookie: {
         secure: true,
+        domain: config.session.domain,
         sameSite: 'lax',
         maxAge: config.session.timeout,
         priority: 'high',
