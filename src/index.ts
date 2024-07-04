@@ -12,12 +12,6 @@ import fs from 'fs';
 async function bootstrap() {
   const app = express();
 
-  // Create logs directory if it doesn't exist
-  const logsDir = './logs';
-  if (!fs.existsSync(logsDir)) {
-    fs.mkdirSync(logsDir);
-  }
-
   // Create proxy.json file if it doesn't exist
   const proxyFile = './proxy.json';
   if (!fs.existsSync(proxyFile)) {
@@ -29,7 +23,10 @@ async function bootstrap() {
     .on('connect', () => {
       logger.info('Connected to Redis');
     })
-    .connect();
+    .connect()
+    .catch((err) => {
+      logger.error('Failed to connect to Redis', err);
+    });
 
   // Authentication middleware
   app.use(authenticate);

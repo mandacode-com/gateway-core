@@ -7,6 +7,7 @@ const logger = pino({
       destination: './logs/info.log',
       translateTime: 'SYS:standard',
       colorize: false,
+      mkdir: true,
     },
   },
 });
