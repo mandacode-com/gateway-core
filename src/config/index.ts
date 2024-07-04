@@ -12,6 +12,7 @@ const T = Type.Object({
   session: Type.Object({
     name: Type.String(),
     secret: Type.String(),
+    timeout: Type.Number(),
   }),
   redis: Type.Object({
     url: Type.String(),
@@ -32,6 +33,7 @@ function validate(raw: Record<string, unknown>) {
     session: {
       name: raw.SESSION_NAME as string,
       secret: raw.COOKIE_SECRET as string,
+      timeout: parseInt(raw.SESSION_TIMEOUT as string),
     },
     redis: {
       url: raw.REDIS_URL as string,

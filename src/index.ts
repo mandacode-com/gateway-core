@@ -4,11 +4,13 @@ import { reqLogger } from './middlewares/logging';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import 'dotenv/config';
 import config from './config';
-import { redis } from './config/redis';
 import { authenticate } from './middlewares/auth';
 import loadProxies from './config/proxies';
+import session from 'express-session';
 import cors from 'cors';
 import helmet from 'helmet';
+import { redis } from './config/redis';
+import RedisStore from 'connect-redis';
 
 async function bootstrap() {
   const app = express();
@@ -26,17 +28,31 @@ async function bootstrap() {
     })
   );
 
-  // Connect to Redis
-  redis
-    .on('connect', () => {
-      logger.info('Connected to Redis');
-    })
-    .connect()
-    .catch((err) => {
-      logger.error('Failed to connect to Redis', err);
-    });
+  // Redis connection
+  const redisClient = await redis.connect();
+  const sessionStore = new RedisStore({
+    client: redisClient,
+  });
 
-  // Authentication middleware
+  // Session middleware
+  app.use(
+    session({
+      name: config.session.name,
+      secret: config.session.secret,
+      resave: false,
+      rolling: true,
+      saveUninitialized: false,
+      cookie: {
+        secure: true,
+        sameSite: 'lax',
+        maxAge: config.session.timeout,
+        priority: 'high',
+      },
+      store: sessionStore,
+    })
+  );
+
+  // Authenticate middleware
   app.use(authenticate);
 
   // Request logger middleware
@@ -60,8 +76,7 @@ async function bootstrap() {
   });
 
   app.listen(config.port, () => {
-    logger.info(`Server started on port ${config.port}`)
+    logger.info(`Server started on port ${config.port}`);
   });
 }
-
 bootstrap();
