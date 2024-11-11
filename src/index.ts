@@ -21,7 +21,7 @@ async function bootstrap() {
   // Cors middleware
   app.use(
     cors({
-      origin: config.cors.origin,
+      origin: new RegExp(config.cors.origin),
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
       exposedHeaders: ['x-uuid', 'x-gateway-secret'],
